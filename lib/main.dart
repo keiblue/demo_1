@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:demo_1/app/app_bloc_observer.dart';
+import 'package:demo_1/bloc/user_list_bloc.dart';
 import 'package:demo_1/pages/gallery.dart';
 import 'package:demo_1/pages/photo.dart';
 import 'package:demo_1/pages/post.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'pages/get.dart';
 
@@ -24,7 +26,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: BlocProvider(
+        create: (context) => UserListBloc(),
+        child: const MyHomePage(title: 'Flutter Demo Home Page'),
+      ),
     );
   }
 }

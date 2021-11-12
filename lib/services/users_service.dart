@@ -22,6 +22,19 @@ class UserService {
     return users;
   }
 
+  Future<List<User>> getUsers2() async {
+    final response =
+        await http.get(Uri.https("jsonplaceholder.typicode.com", "users"));
+    if (response.statusCode == 200) {
+      final body = json.decode(utf8.decode(response.bodyBytes)) as List;
+      return body.map((dynamic item) {
+        return User(item["id"], item["name"], item["username"], item["email"]);
+      }).toList();
+    } else {
+      throw Exception("fallo el request");
+    }
+  }
+
   Future<User?> postUser(String name, String username, String email) async {
     var client = http.Client();
     User user;
