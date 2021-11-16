@@ -6,11 +6,15 @@ abstract class UserListEvent extends Equatable {
 }
 
 // aqui se agregan y definen los eventos
-class UserListDeleted extends UserListEvent {
-  UserListDeleted({required this.user});
+class DeleteUser extends UserListEvent {
+  DeleteUser({required this.user});
   final User user;
 }
 
 class UserListFetched extends UserListEvent {}
 
 class UserListShow extends UserListEvent {}
+
+
+// aqui se agregan y definen los eventos
+

@@ -1,26 +1,25 @@
 part of 'user_list_bloc.dart';
 
-enum UserListStatus { initial, progress, failure, success, deleted }
-
 class UserListState extends Equatable {
-  const UserListState({
-    this.status = UserListStatus.initial,
-    this.users = const <User>[],
-  });
+  @override
+  List<Object> get props => [];
+}
 
-  final UserListStatus status;
+class UserListInitial extends UserListState {}
+
+class UserListLoaded extends UserListState {
   final List<User> users;
+  UserListLoaded({required this.users});
+}
 
-  UserListState copyWith({UserListStatus? status, List<User>? users}) {
-    return UserListState(
-        status: status ?? this.status, users: users ?? this.users);
-  }
+class UserListFailure extends UserListState {
+  UserListFailure({required this.error});
+  final String error;
+}
 
-  @override
-  String toString() {
-    return '''UserListState { status: $status, users: ${users.length} }''';
-  }
+class UserListSuccess extends UserListState {}
 
-  @override
-  List<Object> get props => [status, users];
+class UserListDeleted extends UserListState {
+  UserListDeleted({required this.user});
+  final User user;
 }

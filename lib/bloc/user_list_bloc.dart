@@ -8,42 +8,25 @@ part 'user_list_event.dart';
 part 'user_list_state.dart';
 
 class UserListBloc extends Bloc<UserListEvent, UserListState> {
-  UserListBloc() : super(const UserListState()) {
-    on<UserListFetched>(_onUserFetched);
-    on<UserListDeleted>(_onUserDeleted);
-    on<UserListShow>(_onUserShow);
-  }
-
+  List<User> users = [];
   final userService = userservice.UserService();
+  UserListBloc() : super(UserListInitial());
 
-  FutureOr<void> _onUserFetched(
-      UserListFetched event, Emitter<UserListState> emit) async {
-    try {
-      if (state.status == UserListStatus.initial) {
-        final users = await userService.getUsers2();
-        return emit(
-            state.copyWith(status: UserListStatus.success, users: users));
-      }
-    } catch (_) {
-      emit(state.copyWith(status: UserListStatus.failure));
-    }
-  }
-
-  FutureOr<void> _onUserDeleted(
-      UserListDeleted event, Emitter<UserListState> emit) async {
-    List<User> newUsers = [];
-    for (User user in state.users) {
-      if (user != event.user) {
-        newUsers.add(user);
+  @override
+  Stream<UserListState> mapEventToState(UserListEvent event) async* {
+    if (event is UserListFetched) {
+      yield UserListInitial();
+      try {
+        users = await userService.getUsers();
+        yield UserListLoaded(users: users);
+      } catch (e) {
+        yield UserListFailure(error: 'Unknown Error');
       }
     }
-    return emit(
-        state.copyWith(status: UserListStatus.deleted, users: newUsers));
-  }
-
-  FutureOr<void> _onUserShow(
-      UserListShow event, Emitter<UserListState> emit) async {
-    return emit(
-        state.copyWith(status: UserListStatus.success, users: state.users));
+    if (event is DeleteUser) {
+      User user = event.user;
+      users.remove(user);
+      yield UserListLoaded(users: users);
+    }
   }
 }
